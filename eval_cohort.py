@@ -23,6 +23,7 @@ import matplotlib.pyplot as plt
 from physio.cohort import generate_cohort, cohort_to_json, cohort_from_json
 from physio.schnider import simulate
 from plot_style import apply as apply_style, COLORS
+from controller.pid import PIDController
 
 # ---------------------------------------------------------------------------
 # Infusion schedule (open-loop — will be replaced by PID controller output)
@@ -70,6 +71,27 @@ def evaluate_cohort(cohort, schedule=SCHEDULE, duration=DURATION, dt=DT):
     list[SimulationResult], one per patient in cohort order.
     """
     return [simulate(patient, schedule, duration=duration, dt=dt) for patient in cohort]
+
+
+def evaluate_cohort_pid(cohort, controller, duration=DURATION, dt=DT):
+    """
+    Simulate every patient in the cohort under closed-loop PID control.
+
+    The controller is reset between patients so each simulation starts fresh.
+
+    Parameters
+    ----------
+    cohort     : list[Patient]
+    controller : PIDController
+    duration   : total simulation time (min)
+    dt         : RK4 step size (min)
+
+    Returns
+    -------
+    list[SimulationResult], one per patient in cohort order.
+    """
+    from grid_search import simulate_closed_loop
+    return [simulate_closed_loop(p, controller, duration=duration, dt=dt) for p in cohort]
 
 
 # ---------------------------------------------------------------------------
@@ -146,7 +168,7 @@ def cohort_stats(results, key):
 # ---------------------------------------------------------------------------
 # Plot
 # ---------------------------------------------------------------------------
-def plot_cohort(results, out_path='cohort_eval.png'):
+def plot_cohort(results, out_path='cohort_eval.png', title=None):
     apply_style()
     C    = COLORS
     time = results[0].time
@@ -167,7 +189,8 @@ def plot_cohort(results, out_path='cohort_eval.png'):
     axes[0].set_ylabel('BIS', fontsize=9)
     axes[0].set_ylim(0, 100)
     axes[0].legend(fontsize=8)
-    axes[0].set_title(f'Cohort evaluation  (n={len(results)})', color=C['text'], fontsize=11, pad=10)
+    plot_title = title or f'Cohort evaluation  (n={len(results)})'
+    axes[0].set_title(plot_title, color=C['text'], fontsize=11, pad=10)
 
     # --- Ce ---
     for r in results:
@@ -194,6 +217,8 @@ if __name__ == '__main__':
     parser.add_argument('--seed',     type=int, default=42,  help='Random seed (with --generate).')
     parser.add_argument('--out',      type=str, default='cohorts/n100_seed42.json',
                         help='Save path for generated cohort.')
+    parser.add_argument('--pid',      type=str, default=None,
+                        help='Run closed-loop PID. Format: kp,ki,kd  e.g. --pid 4000,600,2000')
     args = parser.parse_args()
 
     if args.generate:
@@ -205,11 +230,20 @@ if __name__ == '__main__':
         cohort = cohort_from_json(args.cohort)
         print(f'Loaded {len(cohort)}-patient cohort from {args.cohort}')
     else:
-        # Default: generate in-memory for a quick run
-        cohort = generate_cohort(n=100, seed=42)
-        print(f'Using in-memory cohort (n=100, seed=42)')
+        cohort = generate_cohort(n=200, seed=99)
+        print(f'Using in-memory cohort (n=200, seed=99)')
 
-    results = evaluate_cohort(cohort)
+    if args.pid:
+        kp, ki, kd = [float(x) for x in args.pid.split(',')]
+        controller = PIDController(kp=kp, ki=ki, kd=kd, dt=DT)
+        print(f'Closed-loop PID: kp={kp}  ki={ki}  kd={kd}')
+        results  = evaluate_cohort_pid(cohort, controller)
+        out_path = 'cohort_eval_pid.png'
+        title    = f'Cohort evaluation — PID (kp={kp:.0f}, ki={ki:.0f}, kd={kd:.0f})  n={len(results)}'
+    else:
+        results  = evaluate_cohort(cohort)
+        out_path = 'cohort_eval.png'
+        title    = None
 
     bis_med, bis_p10, bis_p90 = cohort_stats(results, 'bis')
     ce_med,  _,       _       = cohort_stats(results, 'ce')
@@ -219,6 +253,6 @@ if __name__ == '__main__':
     print(f'P10   nadir BIS  : {min(bis_p10):.1f}')
     print(f'P90   nadir BIS  : {min(bis_p90):.1f}')
     print(f'Median peak Ce   : {max(ce_med):.2f} µg/mL')
-    print(f'Cohort loss      : {loss:,.1f}')
+    print(f'Cohort loss      : {loss:.6f}')
 
-    plot_cohort(results)
+    plot_cohort(results, out_path=out_path, title=title)
