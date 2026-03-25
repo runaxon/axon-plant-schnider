@@ -4,8 +4,8 @@ physio.schnider
 
 Schnider (1998/1999) propofol PK/PD model.
 
-Pharmacokinetics  — Schnider TW et al. Anesthesiology 88(5):1170-82, 1998
-Pharmacodynamics  — Schnider TW et al. Anesthesiology 90(6):1502-16, 1999
+Pharmacokinetics — Schnider TW et al. Anesthesiology 88(5):1170-82, 1998
+Pharmacodynamics — Schnider TW et al. Anesthesiology 90(6):1502-16, 1999
 
 Model summary
 -------------
@@ -15,7 +15,7 @@ BIS is computed from Ce via a sigmoidal Emax (Hill) equation.
 
 State tuple layout  (used by derivatives / outputs)
 --------------------
-    index 0 : x1  — drug amount in central compartment      (µg)
+    index 0 : x1  — drug amount in central compartment       (µg)
     index 1 : x2  — drug amount in fast peripheral           (µg)
     index 2 : x3  — drug amount in slow peripheral           (µg)
     index 3 : xe  — drug amount in effect-site compartment   (µg)
@@ -86,10 +86,8 @@ def params_from_patient(patient: Patient) -> tuple:
 
     return (v1, v2, v3, k10, k12, k13, k21, k31, ke0, e0, emax, ec50, gamma)
 
-
 # Initial state: drug-naive patient (all compartments empty)
 STATE0: tuple = (0.0, 0.0, 0.0, 0.0)
-
 
 # ---------------------------------------------------------------------------
 # Derivatives  —  the hot path, transpilation target
@@ -103,16 +101,25 @@ def derivatives(state: tuple, inputs: tuple, params: tuple) -> tuple:
     This is the function that will be profiled and transpiled to C.
     It contains only arithmetic on plain floats — no Python objects.
     """
+    # Infusion rate (µg/min)
+    (u_t, ) = inputs  
+
+    # Physio compartments (in amount, not concentration)
     x1, x2, x3, xe = state
-    (u,) = inputs   # infusion rate (µg/min)
+
+    # Volumes and rate parameters
     v1, v2, v3, k10, k12, k13, k21, k31, ke0 = params[:9]
 
-    dx1 = u - (k10 + k12 + k13) * x1 + k21 * x2 + k31 * x3
-    dx2 = k12 * x1 - k21 * x2
-    dx3 = k13 * x1 - k31 * x3
-    dxe = ke0 * (x1 - xe)   # amounts track together; Ce = xe / (v1 * 1000) µg/mL
+    # Derivative calculations
+    dx1_dt = u_t - (k10 + k12 + k13) * x1 + k21 * x2 + k31 * x3
+    dx2_dt = k12 * x1 - k21 * x2
+    dx3_dt = k13 * x1 - k31 * x3
 
-    return (dx1, dx2, dx3, dxe)
+    # Ce and Xe track together
+    # Ce = xe / (v1 * 1000) µg/mL
+    dxe_dt = ke0 * (x1 - xe)  
+
+    return (dx1_dt, dx2_dt, dx3_dt, dxe_dt)
 
 
 # ---------------------------------------------------------------------------

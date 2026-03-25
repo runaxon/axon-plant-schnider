@@ -26,6 +26,8 @@ demo_schnider.py  # Induction + maintenance + washout example
 
 `derivatives()` in `schnider.py` is the ODE right-hand side — a pure arithmetic function with no Python object overhead, designed as the transpilation target for the C optimization stage of the blog series.
 
+![Schnider Propofol PK/PD simulation](schnider_demo.png)
+
 ## Setup
 
 ```bash
