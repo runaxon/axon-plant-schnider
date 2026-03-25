@@ -1,0 +1,1202 @@
+[
+  {
+    "age": 44.3,
+    "weight": 71.7,
+    "height": 179.1,
+    "sex": "male"
+  },
+  {
+    "age": 52.7,
+    "weight": 68.8,
+    "height": 174.7,
+    "sex": "female"
+  },
+  {
+    "age": 37.3,
+    "weight": 84.3,
+    "height": 178.1,
+    "sex": "male"
+  },
+  {
+    "age": 51.1,
+    "weight": 86.2,
+    "height": 176.1,
+    "sex": "female"
+  },
+  {
+    "age": 45.7,
+    "weight": 55.6,
+    "height": 161.5,
+    "sex": "male"
+  },
+  {
+    "age": 41.1,
+    "weight": 110.7,
+    "height": 163.7,
+    "sex": "male"
+  },
+  {
+    "age": 49.3,
+    "weight": 93.9,
+    "height": 195.0,
+    "sex": "female"
+  },
+  {
+    "age": 78.3,
+    "weight": 111.9,
+    "height": 154.3,
+    "sex": "female"
+  },
+  {
+    "age": 41.3,
+    "weight": 109.5,
+    "height": 190.8,
+    "sex": "male"
+  },
+  {
+    "age": 18.1,
+    "weight": 54.0,
+    "height": 158.5,
+    "sex": "male"
+  },
+  {
+    "age": 77.7,
+    "weight": 75.5,
+    "height": 162.1,
+    "sex": "female"
+  },
+  {
+    "age": 29.1,
+    "weight": 86.8,
+    "height": 152.0,
+    "sex": "male"
+  },
+  {
+    "age": 27.7,
+    "weight": 115.5,
+    "height": 174.3,
+    "sex": "male"
+  },
+  {
+    "age": 58.9,
+    "weight": 85.8,
+    "height": 170.0,
+    "sex": "female"
+  },
+  {
+    "age": 19.1,
+    "weight": 101.2,
+    "height": 167.5,
+    "sex": "male"
+  },
+  {
+    "age": 37.0,
+    "weight": 93.5,
+    "height": 192.1,
+    "sex": "male"
+  },
+  {
+    "age": 68.1,
+    "weight": 62.4,
+    "height": 172.3,
+    "sex": "female"
+  },
+  {
+    "age": 74.6,
+    "weight": 68.5,
+    "height": 181.1,
+    "sex": "female"
+  },
+  {
+    "age": 49.8,
+    "weight": 116.2,
+    "height": 187.7,
+    "sex": "female"
+  },
+  {
+    "age": 27.5,
+    "weight": 91.8,
+    "height": 156.3,
+    "sex": "male"
+  },
+  {
+    "age": 52.3,
+    "weight": 58.2,
+    "height": 186.2,
+    "sex": "female"
+  },
+  {
+    "age": 74.3,
+    "weight": 114.8,
+    "height": 170.9,
+    "sex": "female"
+  },
+  {
+    "age": 20.7,
+    "weight": 94.6,
+    "height": 191.4,
+    "sex": "male"
+  },
+  {
+    "age": 70.3,
+    "weight": 89.6,
+    "height": 151.2,
+    "sex": "female"
+  },
+  {
+    "age": 56.5,
+    "weight": 119.7,
+    "height": 157.7,
+    "sex": "female"
+  },
+  {
+    "age": 39.7,
+    "weight": 88.8,
+    "height": 184.6,
+    "sex": "male"
+  },
+  {
+    "age": 62.7,
+    "weight": 105.2,
+    "height": 155.9,
+    "sex": "female"
+  },
+  {
+    "age": 67.7,
+    "weight": 66.3,
+    "height": 179.4,
+    "sex": "female"
+  },
+  {
+    "age": 44.5,
+    "weight": 65.8,
+    "height": 152.2,
+    "sex": "male"
+  },
+  {
+    "age": 69.8,
+    "weight": 60.6,
+    "height": 157.0,
+    "sex": "female"
+  },
+  {
+    "age": 43.5,
+    "weight": 104.0,
+    "height": 160.4,
+    "sex": "male"
+  },
+  {
+    "age": 30.2,
+    "weight": 118.3,
+    "height": 171.7,
+    "sex": "male"
+  },
+  {
+    "age": 54.4,
+    "weight": 107.4,
+    "height": 161.7,
+    "sex": "female"
+  },
+  {
+    "age": 19.5,
+    "weight": 113.3,
+    "height": 181.8,
+    "sex": "male"
+  },
+  {
+    "age": 50.4,
+    "weight": 116.5,
+    "height": 152.4,
+    "sex": "female"
+  },
+  {
+    "age": 69.9,
+    "weight": 77.0,
+    "height": 151.5,
+    "sex": "female"
+  },
+  {
+    "age": 71.6,
+    "weight": 105.4,
+    "height": 192.7,
+    "sex": "female"
+  },
+  {
+    "age": 79.1,
+    "weight": 59.2,
+    "height": 178.5,
+    "sex": "female"
+  },
+  {
+    "age": 38.4,
+    "weight": 80.5,
+    "height": 185.8,
+    "sex": "male"
+  },
+  {
+    "age": 45.1,
+    "weight": 90.7,
+    "height": 166.7,
+    "sex": "male"
+  },
+  {
+    "age": 25.5,
+    "weight": 81.4,
+    "height": 175.5,
+    "sex": "male"
+  },
+  {
+    "age": 68.4,
+    "weight": 92.2,
+    "height": 159.7,
+    "sex": "female"
+  },
+  {
+    "age": 63.6,
+    "weight": 50.4,
+    "height": 186.7,
+    "sex": "female"
+  },
+  {
+    "age": 72.9,
+    "weight": 52.0,
+    "height": 189.7,
+    "sex": "female"
+  },
+  {
+    "age": 31.8,
+    "weight": 114.2,
+    "height": 185.2,
+    "sex": "male"
+  },
+  {
+    "age": 40.9,
+    "weight": 57.7,
+    "height": 175.7,
+    "sex": "male"
+  },
+  {
+    "age": 39.0,
+    "weight": 99.8,
+    "height": 156.7,
+    "sex": "male"
+  },
+  {
+    "age": 35.8,
+    "weight": 103.3,
+    "height": 152.5,
+    "sex": "male"
+  },
+  {
+    "age": 64.5,
+    "weight": 56.1,
+    "height": 166.5,
+    "sex": "female"
+  },
+  {
+    "age": 59.3,
+    "weight": 63.1,
+    "height": 184.2,
+    "sex": "female"
+  },
+  {
+    "age": 62.4,
+    "weight": 80.4,
+    "height": 157.6,
+    "sex": "female"
+  },
+  {
+    "age": 76.4,
+    "weight": 95.0,
+    "height": 161.7,
+    "sex": "female"
+  },
+  {
+    "age": 22.5,
+    "weight": 74.7,
+    "height": 153.1,
+    "sex": "male"
+  },
+  {
+    "age": 75.3,
+    "weight": 58.8,
+    "height": 193.9,
+    "sex": "female"
+  },
+  {
+    "age": 56.2,
+    "weight": 110.9,
+    "height": 189.3,
+    "sex": "female"
+  },
+  {
+    "age": 59.8,
+    "weight": 97.8,
+    "height": 171.0,
+    "sex": "female"
+  },
+  {
+    "age": 71.9,
+    "weight": 70.2,
+    "height": 192.0,
+    "sex": "female"
+  },
+  {
+    "age": 61.5,
+    "weight": 87.3,
+    "height": 170.3,
+    "sex": "female"
+  },
+  {
+    "age": 42.5,
+    "weight": 108.0,
+    "height": 161.2,
+    "sex": "male"
+  },
+  {
+    "age": 36.6,
+    "weight": 82.3,
+    "height": 188.0,
+    "sex": "male"
+  },
+  {
+    "age": 18.8,
+    "weight": 63.4,
+    "height": 150.9,
+    "sex": "male"
+  },
+  {
+    "age": 68.6,
+    "weight": 74.4,
+    "height": 188.3,
+    "sex": "female"
+  },
+  {
+    "age": 43.8,
+    "weight": 90.1,
+    "height": 180.4,
+    "sex": "male"
+  },
+  {
+    "age": 21.5,
+    "weight": 79.2,
+    "height": 150.6,
+    "sex": "male"
+  },
+  {
+    "age": 32.7,
+    "weight": 85.2,
+    "height": 157.3,
+    "sex": "male"
+  },
+  {
+    "age": 34.4,
+    "weight": 102.6,
+    "height": 156.4,
+    "sex": "male"
+  },
+  {
+    "age": 33.3,
+    "weight": 112.1,
+    "height": 174.0,
+    "sex": "male"
+  },
+  {
+    "age": 67.1,
+    "weight": 96.6,
+    "height": 169.2,
+    "sex": "female"
+  },
+  {
+    "age": 40.4,
+    "weight": 75.7,
+    "height": 167.1,
+    "sex": "male"
+  },
+  {
+    "age": 52.9,
+    "weight": 106.6,
+    "height": 193.4,
+    "sex": "female"
+  },
+  {
+    "age": 57.2,
+    "weight": 67.3,
+    "height": 150.1,
+    "sex": "female"
+  },
+  {
+    "age": 54.1,
+    "weight": 89.2,
+    "height": 165.5,
+    "sex": "female"
+  },
+  {
+    "age": 69.3,
+    "weight": 83.5,
+    "height": 177.3,
+    "sex": "female"
+  },
+  {
+    "age": 20.0,
+    "weight": 118.7,
+    "height": 165.8,
+    "sex": "male"
+  },
+  {
+    "age": 57.5,
+    "weight": 99.2,
+    "height": 188.6,
+    "sex": "female"
+  },
+  {
+    "age": 58.0,
+    "weight": 76.6,
+    "height": 183.5,
+    "sex": "female"
+  },
+  {
+    "age": 77.1,
+    "weight": 69.7,
+    "height": 155.6,
+    "sex": "female"
+  },
+  {
+    "age": 60.8,
+    "weight": 91.5,
+    "height": 151.7,
+    "sex": "female"
+  },
+  {
+    "age": 25.1,
+    "weight": 86.5,
+    "height": 176.1,
+    "sex": "male"
+  },
+  {
+    "age": 32.4,
+    "weight": 63.8,
+    "height": 176.3,
+    "sex": "male"
+  },
+  {
+    "age": 46.9,
+    "weight": 112.5,
+    "height": 160.8,
+    "sex": "male"
+  },
+  {
+    "age": 53.6,
+    "weight": 54.8,
+    "height": 178.8,
+    "sex": "female"
+  },
+  {
+    "age": 27.0,
+    "weight": 98.6,
+    "height": 182.5,
+    "sex": "male"
+  },
+  {
+    "age": 78.0,
+    "weight": 82.9,
+    "height": 194.3,
+    "sex": "female"
+  },
+  {
+    "age": 30.6,
+    "weight": 99.5,
+    "height": 184.2,
+    "sex": "male"
+  },
+  {
+    "age": 40.1,
+    "weight": 91.0,
+    "height": 155.5,
+    "sex": "male"
+  },
+  {
+    "age": 26.3,
+    "weight": 95.8,
+    "height": 184.9,
+    "sex": "male"
+  },
+  {
+    "age": 65.8,
+    "weight": 52.9,
+    "height": 187.4,
+    "sex": "female"
+  },
+  {
+    "age": 47.8,
+    "weight": 109.0,
+    "height": 193.7,
+    "sex": "male"
+  },
+  {
+    "age": 46.0,
+    "weight": 73.5,
+    "height": 173.8,
+    "sex": "male"
+  },
+  {
+    "age": 58.4,
+    "weight": 119.2,
+    "height": 187.2,
+    "sex": "female"
+  },
+  {
+    "age": 29.6,
+    "weight": 88.0,
+    "height": 173.4,
+    "sex": "male"
+  },
+  {
+    "age": 23.6,
+    "weight": 117.7,
+    "height": 167.6,
+    "sex": "male"
+  },
+  {
+    "age": 55.1,
+    "weight": 115.3,
+    "height": 182.9,
+    "sex": "female"
+  },
+  {
+    "age": 21.9,
+    "weight": 64.5,
+    "height": 165.4,
+    "sex": "male"
+  },
+  {
+    "age": 22.9,
+    "weight": 61.8,
+    "height": 158.7,
+    "sex": "male"
+  },
+  {
+    "age": 66.3,
+    "weight": 107.0,
+    "height": 179.8,
+    "sex": "female"
+  },
+  {
+    "age": 41.9,
+    "weight": 93.2,
+    "height": 180.0,
+    "sex": "male"
+  },
+  {
+    "age": 24.1,
+    "weight": 105.7,
+    "height": 186.6,
+    "sex": "male"
+  },
+  {
+    "age": 76.8,
+    "weight": 74.9,
+    "height": 164.9,
+    "sex": "female"
+  },
+  {
+    "age": 72.2,
+    "weight": 69.2,
+    "height": 181.3,
+    "sex": "female"
+  },
+  {
+    "age": 41.6,
+    "weight": 117.9,
+    "height": 190.1,
+    "sex": "male"
+  },
+  {
+    "age": 63.3,
+    "weight": 104.7,
+    "height": 178.2,
+    "sex": "female"
+  },
+  {
+    "age": 47.4,
+    "weight": 101.8,
+    "height": 194.7,
+    "sex": "male"
+  },
+  {
+    "age": 52.0,
+    "weight": 100.8,
+    "height": 193.1,
+    "sex": "female"
+  },
+  {
+    "age": 63.9,
+    "weight": 53.6,
+    "height": 174.9,
+    "sex": "female"
+  },
+  {
+    "age": 36.9,
+    "weight": 88.4,
+    "height": 154.0,
+    "sex": "male"
+  },
+  {
+    "age": 45.5,
+    "weight": 79.6,
+    "height": 169.8,
+    "sex": "male"
+  },
+  {
+    "age": 61.3,
+    "weight": 98.2,
+    "height": 180.9,
+    "sex": "female"
+  },
+  {
+    "age": 23.2,
+    "weight": 69.6,
+    "height": 166.4,
+    "sex": "male"
+  },
+  {
+    "age": 79.6,
+    "weight": 50.3,
+    "height": 163.8,
+    "sex": "female"
+  },
+  {
+    "age": 50.7,
+    "weight": 109.9,
+    "height": 154.2,
+    "sex": "female"
+  },
+  {
+    "age": 55.8,
+    "weight": 93.0,
+    "height": 167.8,
+    "sex": "female"
+  },
+  {
+    "age": 39.5,
+    "weight": 95.9,
+    "height": 154.8,
+    "sex": "male"
+  },
+  {
+    "age": 28.1,
+    "weight": 61.5,
+    "height": 171.3,
+    "sex": "male"
+  },
+  {
+    "age": 35.4,
+    "weight": 77.9,
+    "height": 157.9,
+    "sex": "male"
+  },
+  {
+    "age": 26.4,
+    "weight": 65.2,
+    "height": 182.2,
+    "sex": "male"
+  },
+  {
+    "age": 43.1,
+    "weight": 60.0,
+    "height": 179.7,
+    "sex": "male"
+  },
+  {
+    "age": 20.3,
+    "weight": 59.7,
+    "height": 192.5,
+    "sex": "male"
+  },
+  {
+    "age": 49.3,
+    "weight": 58.0,
+    "height": 175.0,
+    "sex": "female"
+  },
+  {
+    "age": 53.9,
+    "weight": 51.1,
+    "height": 192.8,
+    "sex": "female"
+  },
+  {
+    "age": 25.8,
+    "weight": 103.7,
+    "height": 185.7,
+    "sex": "male"
+  },
+  {
+    "age": 73.9,
+    "weight": 107.1,
+    "height": 194.3,
+    "sex": "female"
+  },
+  {
+    "age": 38.7,
+    "weight": 109.6,
+    "height": 189.5,
+    "sex": "male"
+  },
+  {
+    "age": 23.3,
+    "weight": 114.6,
+    "height": 188.2,
+    "sex": "male"
+  },
+  {
+    "age": 31.3,
+    "weight": 104.3,
+    "height": 155.2,
+    "sex": "male"
+  },
+  {
+    "age": 33.0,
+    "weight": 61.0,
+    "height": 177.6,
+    "sex": "male"
+  },
+  {
+    "age": 66.8,
+    "weight": 83.9,
+    "height": 190.5,
+    "sex": "female"
+  },
+  {
+    "age": 42.7,
+    "weight": 78.4,
+    "height": 169.5,
+    "sex": "male"
+  },
+  {
+    "age": 29.4,
+    "weight": 82.2,
+    "height": 175.4,
+    "sex": "male"
+  },
+  {
+    "age": 68.9,
+    "weight": 51.4,
+    "height": 191.2,
+    "sex": "female"
+  },
+  {
+    "age": 73.4,
+    "weight": 84.1,
+    "height": 183.7,
+    "sex": "female"
+  },
+  {
+    "age": 65.4,
+    "weight": 57.2,
+    "height": 172.0,
+    "sex": "female"
+  },
+  {
+    "age": 75.6,
+    "weight": 112.7,
+    "height": 177.1,
+    "sex": "female"
+  },
+  {
+    "age": 55.7,
+    "weight": 71.0,
+    "height": 183.1,
+    "sex": "female"
+  },
+  {
+    "age": 31.4,
+    "weight": 81.6,
+    "height": 153.3,
+    "sex": "male"
+  },
+  {
+    "age": 19.6,
+    "weight": 52.3,
+    "height": 153.4,
+    "sex": "male"
+  },
+  {
+    "age": 26.7,
+    "weight": 54.9,
+    "height": 160.7,
+    "sex": "male"
+  },
+  {
+    "age": 20.9,
+    "weight": 90.4,
+    "height": 154.6,
+    "sex": "male"
+  },
+  {
+    "age": 61.8,
+    "weight": 102.4,
+    "height": 169.7,
+    "sex": "female"
+  },
+  {
+    "age": 57.7,
+    "weight": 73.4,
+    "height": 163.2,
+    "sex": "female"
+  },
+  {
+    "age": 71.0,
+    "weight": 103.0,
+    "height": 173.5,
+    "sex": "female"
+  },
+  {
+    "age": 53.3,
+    "weight": 77.3,
+    "height": 164.2,
+    "sex": "female"
+  },
+  {
+    "age": 31.0,
+    "weight": 62.8,
+    "height": 193.5,
+    "sex": "male"
+  },
+  {
+    "age": 72.7,
+    "weight": 85.0,
+    "height": 172.1,
+    "sex": "female"
+  },
+  {
+    "age": 28.3,
+    "weight": 81.1,
+    "height": 164.3,
+    "sex": "male"
+  },
+  {
+    "age": 46.3,
+    "weight": 64.2,
+    "height": 163.0,
+    "sex": "male"
+  },
+  {
+    "age": 22.1,
+    "weight": 60.2,
+    "height": 155.1,
+    "sex": "male"
+  },
+  {
+    "age": 64.9,
+    "weight": 82.6,
+    "height": 153.6,
+    "sex": "female"
+  },
+  {
+    "age": 33.7,
+    "weight": 67.6,
+    "height": 162.6,
+    "sex": "male"
+  },
+  {
+    "age": 59.0,
+    "weight": 76.5,
+    "height": 184.7,
+    "sex": "female"
+  },
+  {
+    "age": 71.1,
+    "weight": 97.3,
+    "height": 168.1,
+    "sex": "female"
+  },
+  {
+    "age": 24.3,
+    "weight": 101.5,
+    "height": 180.8,
+    "sex": "male"
+  },
+  {
+    "age": 60.4,
+    "weight": 50.9,
+    "height": 174.4,
+    "sex": "female"
+  },
+  {
+    "age": 46.5,
+    "weight": 117.0,
+    "height": 169.0,
+    "sex": "male"
+  },
+  {
+    "age": 34.4,
+    "weight": 74.0,
+    "height": 172.8,
+    "sex": "male"
+  },
+  {
+    "age": 51.7,
+    "weight": 66.5,
+    "height": 156.9,
+    "sex": "female"
+  },
+  {
+    "age": 18.5,
+    "weight": 76.2,
+    "height": 187.1,
+    "sex": "male"
+  },
+  {
+    "age": 62.2,
+    "weight": 54.4,
+    "height": 162.2,
+    "sex": "female"
+  },
+  {
+    "age": 39.1,
+    "weight": 108.5,
+    "height": 176.8,
+    "sex": "male"
+  },
+  {
+    "age": 21.4,
+    "weight": 78.2,
+    "height": 190.4,
+    "sex": "male"
+  },
+  {
+    "age": 79.8,
+    "weight": 55.3,
+    "height": 184.0,
+    "sex": "female"
+  },
+  {
+    "age": 42.9,
+    "weight": 88.9,
+    "height": 182.0,
+    "sex": "male"
+  },
+  {
+    "age": 55.4,
+    "weight": 53.5,
+    "height": 191.8,
+    "sex": "female"
+  },
+  {
+    "age": 75.0,
+    "weight": 52.7,
+    "height": 179.0,
+    "sex": "female"
+  },
+  {
+    "age": 76.0,
+    "weight": 106.2,
+    "height": 152.9,
+    "sex": "female"
+  },
+  {
+    "age": 24.7,
+    "weight": 58.7,
+    "height": 185.4,
+    "sex": "male"
+  },
+  {
+    "age": 45.0,
+    "weight": 66.8,
+    "height": 158.3,
+    "sex": "male"
+  },
+  {
+    "age": 63.0,
+    "weight": 94.4,
+    "height": 182.8,
+    "sex": "female"
+  },
+  {
+    "age": 78.7,
+    "weight": 80.0,
+    "height": 168.8,
+    "sex": "female"
+  },
+  {
+    "age": 70.4,
+    "weight": 100.5,
+    "height": 160.3,
+    "sex": "female"
+  },
+  {
+    "age": 54.8,
+    "weight": 78.9,
+    "height": 189.0,
+    "sex": "female"
+  },
+  {
+    "age": 29.9,
+    "weight": 72.6,
+    "height": 168.3,
+    "sex": "male"
+  },
+  {
+    "age": 34.9,
+    "weight": 113.9,
+    "height": 186.3,
+    "sex": "male"
+  },
+  {
+    "age": 48.7,
+    "weight": 56.6,
+    "height": 177.7,
+    "sex": "male"
+  },
+  {
+    "age": 47.5,
+    "weight": 100.4,
+    "height": 166.1,
+    "sex": "male"
+  },
+  {
+    "age": 35.3,
+    "weight": 113.5,
+    "height": 189.9,
+    "sex": "male"
+  },
+  {
+    "age": 64.6,
+    "weight": 85.4,
+    "height": 176.7,
+    "sex": "female"
+  },
+  {
+    "age": 66.5,
+    "weight": 87.7,
+    "height": 181.6,
+    "sex": "female"
+  },
+  {
+    "age": 51.5,
+    "weight": 117.4,
+    "height": 158.9,
+    "sex": "female"
+  },
+  {
+    "age": 79.1,
+    "weight": 70.4,
+    "height": 150.3,
+    "sex": "female"
+  },
+  {
+    "age": 56.9,
+    "weight": 97.2,
+    "height": 159.6,
+    "sex": "female"
+  },
+  {
+    "age": 67.4,
+    "weight": 71.6,
+    "height": 171.5,
+    "sex": "female"
+  },
+  {
+    "age": 77.2,
+    "weight": 71.2,
+    "height": 165.2,
+    "sex": "female"
+  },
+  {
+    "age": 60.7,
+    "weight": 56.8,
+    "height": 159.3,
+    "sex": "female"
+  },
+  {
+    "age": 73.6,
+    "weight": 98.9,
+    "height": 173.1,
+    "sex": "female"
+  },
+  {
+    "age": 72.5,
+    "weight": 95.4,
+    "height": 170.5,
+    "sex": "female"
+  },
+  {
+    "age": 60.2,
+    "weight": 110.5,
+    "height": 172.7,
+    "sex": "female"
+  },
+  {
+    "age": 48.4,
+    "weight": 96.3,
+    "height": 168.5,
+    "sex": "male"
+  },
+  {
+    "age": 75.8,
+    "weight": 108.3,
+    "height": 164.6,
+    "sex": "female"
+  },
+  {
+    "age": 37.9,
+    "weight": 64.9,
+    "height": 167.2,
+    "sex": "male"
+  },
+  {
+    "age": 24.9,
+    "weight": 72.8,
+    "height": 162.6,
+    "sex": "male"
+  },
+  {
+    "age": 28.8,
+    "weight": 111.5,
+    "height": 180.5,
+    "sex": "male"
+  },
+  {
+    "age": 37.6,
+    "weight": 119.6,
+    "height": 159.2,
+    "sex": "male"
+  },
+  {
+    "age": 36.1,
+    "weight": 72.1,
+    "height": 151.0,
+    "sex": "male"
+  },
+  {
+    "age": 32.0,
+    "weight": 116.0,
+    "height": 191.0,
+    "sex": "male"
+  },
+  {
+    "age": 65.6,
+    "weight": 92.5,
+    "height": 188.8,
+    "sex": "female"
+  },
+  {
+    "age": 33.9,
+    "weight": 62.1,
+    "height": 160.0,
+    "sex": "male"
+  },
+  {
+    "age": 48.3,
+    "weight": 65.7,
+    "height": 163.3,
+    "sex": "male"
+  },
+  {
+    "age": 50.1,
+    "weight": 67.9,
+    "height": 164.6,
+    "sex": "female"
+  }
+]
