@@ -18,7 +18,6 @@ build/
 .ipynb_checkpoints/
 
 # Generated outputs
-*.png
 *.pdf
 
 # OS
