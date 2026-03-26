@@ -20,5 +20,14 @@ build/
 # Generated outputs
 *.pdf
 
+# Cython build artifacts
+build/
+*.c
+*.so
+*.html
+physio/*.c
+physio/*.so
+physio/*.html
+
 # OS
 .DS_Store

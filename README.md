@@ -33,22 +33,73 @@ All PK parameters are derived from patient demographics (age, weight, height, se
 
 ```
 physio/
-    core.py       # Patient, generic RK4 integrator, simulate(), SimulationResult
-    schnider.py   # params_from_patient(), derivatives(), outputs()
-    cohort.py     # Latin Hypercube Sampling cohort generator + JSON persistence
+    core.py              # Patient, generic RK4 integrator, simulate(), SimulationResult
+    schnider.py          # params_from_patient(), derivatives(), outputs()
+    cohort.py            # Latin Hypercube Sampling cohort generator + JSON persistence
 
 controller/
-    pid.py        # Discrete-time PID with anti-windup and output clamping
+    pid.py               # Discrete-time PID with anti-windup and output clamping
 
-demo_schnider.py  # Single patient: induction + maintenance + washout
-eval_cohort.py    # Cohort evaluation harness + loss function
-grid_search.py    # Grid search over PID gains + 3D loss landscape plot
+cython_ext/
+    schnider_cy.pyx      # Typed Cython on derivatives() only — 1.03× speedup
+    schnider_full_cy.pyx # Full C hot path — 68× speedup (see below)
+    setup_naive.py       # Build: naive Cython compile of schnider.py (annotate=True)
+    setup_typed.py       # Build: typed derivatives() only
+    setup_full.py        # Build: full C extension
 
-cohorts/          # Persisted cohort JSON files
-results/          # Grid search results
+demo_schnider.py         # Single patient: induction + maintenance + washout
+eval_cohort.py           # Cohort evaluation harness + loss function
+grid_search.py           # Pure Python grid search (~185s baseline)
+grid_search_fast.py      # C extension grid search (~2.7s)
+profile_sim.py           # cProfile + line_profiler instrumentation
+
+cohorts/                 # Persisted cohort JSON files
+results/                 # Grid search results
 ```
 
-`derivatives()` in `physio/schnider.py` is the ODE right-hand side — a pure arithmetic function with no Python object overhead. It is the transpilation target for the C optimization stage.
+---
+
+## C extension
+
+`cython_ext/schnider_full_cy.pyx` contains the full optimized hot path. Four functions are compiled as `cdef noexcept nogil` — invisible to Python, operating on raw C doubles, no GIL:
+
+| Function | What it does |
+|---|---|
+| `derivatives_fast` | Schnider ODE right-hand side — 4 compartment equations |
+| `rk4_step_cy` | Fixed-step RK4 integrator — calls `derivatives_fast` directly |
+| `bis_fast` | Hill equation: effect-site concentration → BIS score |
+| `pid_step` | Discrete PID step with anti-windup — operates on a `cdef struct PIDState` |
+
+The critical design decision: all four functions live in the **same `.pyx` file**. This means `rk4_step_cy` calls `derivatives_fast` as a direct C function call — no Python boundary, no tuple boxing, no GIL. A separately compiled `derivatives_cy.so` would still pay the Python call overhead four times per RK4 step, which is why `schnider_cy.pyx` (typed `derivatives` only) yields only 1.03× despite correct typing.
+
+Two Python-callable entry points are exposed:
+
+- **`simulate_closed_loop_cy(patient, kp, ki, kd, ...)`** — returns a scalar ISE value. No time-series allocation. Used by the grid search.
+- **`simulate_closed_loop_cy_full(patient, kp, ki, kd, ...)`** — returns a full `SimulationResult` with time-series. Used for plotting.
+
+### Building the extension
+
+```bash
+python cython_ext/setup_full.py build_ext --inplace
+```
+
+Requires Cython and a C compiler (`clang` on macOS, `gcc` on Linux). The `.so` lands in `cython_ext/`.
+
+### Speedup summary
+
+| | Grid search time | Speedup |
+|---|---|---|
+| Pure Python | 185.2s | 1.0× |
+| Naive Cython | 174.6s | 1.06× |
+| Typed Cython (`derivatives` only) | 178.9s | 1.03× |
+| Full C (`rk4_step` + `derivatives`) | 54.7s | 3.4× |
+| Full C + PID + Hill equation + scalar mode | **2.7s** | **68×** |
+
+### Running the fast grid search
+
+```bash
+python grid_search_fast.py
+```
 
 ---
 
@@ -139,12 +190,16 @@ Key implementation details:
 ## Grid search
 
 ```bash
+# Pure Python (~185s — the baseline for the profiling story)
 python grid_search.py --cohort cohorts/n200_seed99.json
+
+# C extension (~2.7s — requires building cython_ext/schnider_full_cy first)
+python grid_search_fast.py
 ```
 
 Searches 512 candidates ($8^3$ grid) centered on the known optimum region. Each candidate runs all 200 patients in closed-loop.
 
-**512 candidates × 200 patients = 102,400 simulations — 185 seconds in pure Python.**
+**512 candidates × 200 patients = 102,400 simulations — 185 seconds in pure Python, 2.7 seconds with the C extension.**
 
 Best gains found: `kp=4000, ki=600, kd=2000`
 
