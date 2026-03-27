@@ -51,6 +51,7 @@ demo_schnider.py         # Single patient: induction + maintenance + washout
 eval_cohort.py           # Cohort evaluation harness + loss function
 grid_search.py           # Pure Python grid search (~185s baseline)
 grid_search_fast.py      # C extension grid search (~2.7s)
+grid_search_parallel.py  # C extension + multiprocessing (~0.6s, 14 cores)
 profile_sim.py           # cProfile + line_profiler instrumentation
 
 cohorts/                 # Persisted cohort JSON files
@@ -93,12 +94,18 @@ Requires Cython and a C compiler (`clang` on macOS, `gcc` on Linux). The `.so` l
 | Naive Cython | 174.6s | 1.06× |
 | Typed Cython (`derivatives` only) | 178.9s | 1.03× |
 | Full C (`rk4_step` + `derivatives`) | 54.7s | 3.4× |
-| Full C + PID + Hill equation + scalar mode | **2.7s** | **68×** |
+| Full C + PID + Hill equation + scalar mode | 2.7s | 68× |
+| Full C + parallel (14 cores) | **0.6s** | **308×** |
 
 ### Running the fast grid search
 
 ```bash
+# Single process
 python grid_search_fast.py
+
+# Parallel (uses all cores by default, or specify --workers N)
+python grid_search_parallel.py
+python grid_search_parallel.py --workers 8
 ```
 
 ---
@@ -193,13 +200,16 @@ Key implementation details:
 # Pure Python (~185s — the baseline for the profiling story)
 python grid_search.py --cohort cohorts/n200_seed99.json
 
-# C extension (~2.7s — requires building cython_ext/schnider_full_cy first)
+# C extension, single process (~2.7s)
 python grid_search_fast.py
+
+# C extension + multiprocessing (~0.6s on 14 cores)
+python grid_search_parallel.py --workers 14
 ```
 
 Searches 512 candidates ($8^3$ grid) centered on the known optimum region. Each candidate runs all 200 patients in closed-loop.
 
-**512 candidates × 200 patients = 102,400 simulations — 185 seconds in pure Python, 2.7 seconds with the C extension.**
+**512 candidates × 200 patients = 102,400 simulations — 185 seconds in pure Python, 0.6 seconds with the C extension and 14 cores.**
 
 Best gains found: `kp=4000, ki=600, kd=2000`
 
