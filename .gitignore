@@ -31,3 +31,6 @@ physio/*.html
 
 # OS
 .DS_Store
+
+# Myelin generated artifacts
+.myelin/
