@@ -9,7 +9,7 @@ Example repository for the [Axon](https://runaxon.com) tech blog series on profi
 A pure-Python implementation of the **Schnider (1998/1999) propofol pharmacokinetic/pharmacodynamic model** — the same model used in clinical Target Controlled Infusion (TCI) pumps — extended with a virtual patient cohort generator, a closed-loop PID controller, and a grid search optimizer.
 
 The repository accompanies a blog article that walks through:
-1. Implementing the physiological model
+1. Implementing the physiological model (non-closed form solution)
 2. Building a virtual patient cohort via Latin Hypercube Sampling
 3. Designing a PID controller and scoring it across the cohort
 4. Profiling the bottleneck and transpiling the ODE hot path to C
@@ -24,6 +24,8 @@ Propofol distributes through the body via a **3-compartment mammillary PK model*
 The observable output is **BIS** (Bispectral Index) — a processed EEG signal scaled 0–100 that quantifies anesthetic depth. BIS is mapped from effect-site concentration via a sigmoidal Hill equation. The clinical target for general anesthesia is BIS 40–60.
 
 All PK parameters are derived from patient demographics (age, weight, height, sex) using the Schnider population model.
+
+The Schnider model happens to be a linear ODE, thus there is a closed-form solution for Ce(t). However, the purpose of this repo and accompanying article is to show how to speedup PK/PD models that do not have closed-form solutions. Let's pretend like one day a non-linearity will be added to the Schnider model. In that world, we can pretend this RK4 implementation was **not** all for not.
 
 ![Single patient simulation: Cp, Ce, BIS, and infusion rate over 60 minutes](schnider_demo.png)
 

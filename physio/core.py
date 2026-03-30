@@ -39,10 +39,10 @@ from typing import Callable
 @dataclass
 class Patient:
     """Standard demographic covariates used across compartmental PK/PD models."""
-    age:    float   # years
+    age: float   # years
     weight: float   # kg  (total body weight)
     height: float   # cm
-    sex:    str     # 'male' or 'female'
+    sex: str     # 'male' or 'female'
 
     def lean_body_mass(self) -> float:
         """James (1976) LBM formula."""
@@ -69,13 +69,12 @@ Signature: deriv(state: tuple, inputs: tuple, params: tuple) -> tuple
 Returns a tuple of derivatives, one per state element.
 """
 
-
 def rk4_step(
-    deriv:  DerivativesFn,
-    state:  tuple,
+    deriv: DerivativesFn,
+    state: tuple,
     inputs: tuple,
     params: tuple,
-    dt:     float,
+    dt: float,
 ) -> tuple:
     """
     Advance `state` by one fixed RK4 step of size `dt`.
@@ -95,15 +94,13 @@ def rk4_step(
     k4 = deriv(s4, inputs, params)
 
     return tuple(
-        s + (dt / 6.0) * (d1 + 2*d2 + 2*d3 + d4)
+        s + (dt / 6.0) * (d1 + 2 * d2 + 2 * d3 + d4)
         for s, d1, d2, d3, d4 in zip(state, k1, k2, k3, k4)
     )
-
 
 # ---------------------------------------------------------------------------
 # Simulation result container
 # ---------------------------------------------------------------------------
-
 @dataclass
 class SimulationResult:
     """
@@ -114,7 +111,7 @@ class SimulationResult:
         result.outputs['cp']   # plasma concentration
         result.cp              # shorthand via __getattr__
     """
-    time:    list[float]             = field(default_factory=list)
+    time: list[float] = field(default_factory=list)
     outputs: dict[str, list[float]] = field(default_factory=dict)
 
     def __getattr__(self, name: str) -> list[float]:
@@ -124,19 +121,17 @@ class SimulationResult:
         except KeyError:
             raise AttributeError(f"SimulationResult has no output '{name}'") from None
 
-
 # ---------------------------------------------------------------------------
 # Generic simulation loop
 # ---------------------------------------------------------------------------
-
 def simulate(
-    deriv:      DerivativesFn,
+    deriv: DerivativesFn,
     outputs_fn: Callable[[tuple, tuple], dict[str, float]],
-    state0:     tuple,
-    params:     tuple,
+    state0: tuple,
+    params: tuple,
     infusion_schedule: list[tuple[float, float | tuple]],
-    duration:   float,
-    dt:         float = 0.1,
+    duration: float,
+    dt: float=0.1
 ) -> SimulationResult:
     """
     Run a forward simulation of any compartmental model.
@@ -175,9 +170,9 @@ def simulate(
                 break
         return inp if isinstance(inp, tuple) else (inp,)
 
-    result  = SimulationResult()
-    state   = state0
-    t       = 0.0
+    result = SimulationResult()
+    state = state0
+    t = 0.0
     n_steps = int(round(duration / dt))
 
     for _ in range(n_steps):
@@ -188,7 +183,7 @@ def simulate(
             result.outputs.setdefault(k, []).append(v)
 
         state = rk4_step(deriv, state, inputs, params, dt)
-        t    += dt
+        t += dt
 
     # Append the final point after the last step
     result.time.append(t)

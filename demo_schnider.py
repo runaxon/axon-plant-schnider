@@ -15,13 +15,13 @@ from plot_style import apply as apply_style, COLORS
 patient = Patient(age=40, weight=70, height=170, sex='male')
 
 schedule = [
-    (0.0,  140_000.0),   # induction: 140 mg/min for 1 min (~2 mg/kg)
-    (1.0,    7_000.0),   # maintenance: 7 mg/min (~100 µg/kg/min)
-    (30.0,       0.0),   # stop — observe washout
+    (0.0, 140_000.0),  # Induction: 140 mg/min for 1 min (~2 mg/kg)
+    (1.0, 7_000.0),    # Maintenance: 7 mg/min (~100 µg/kg/min)
+    (30.0, 0.0),       # Stop, observe washout
 ]
 
-result = simulate(patient, schedule, duration=60.0, dt=0.05)
-pk     = params_from_patient(patient)
+result = simulate(patient, schedule, duration=90.0, dt=0.05)
+pk = params_from_patient(patient)
 
 print(f"LBM      : {patient.lean_body_mass():.1f} kg")
 print(f"V1/V2/V3 : {pk[0]:.2f} / {pk[1]:.2f} / {pk[2]:.2f} L")
