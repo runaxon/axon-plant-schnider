@@ -35,58 +35,74 @@ The Schnider model happens to be a linear ODE, thus there is a closed-form solut
 
 ```
 physio/
-    core.py              # Patient, generic RK4 integrator, simulate(), SimulationResult
-    schnider.py          # params_from_patient(), derivatives(), outputs()
-    cohort.py            # Latin Hypercube Sampling cohort generator + JSON persistence
+    core.py                    # Patient, generic RK4 integrator, simulate(), SimulationResult
+    schnider.py                # params_from_patient(), derivatives(), outputs(), mass balance test
+    cohort.py                  # Latin Hypercube Sampling cohort generator + JSON persistence
 
 controller/
-    pid.py               # Discrete-time PID with anti-windup and output clamping
+    pid.py                     # Discrete-time PID with anti-windup and output clamping
 
 cython_ext/
-    schnider_cy.pyx      # Typed Cython on derivatives() only — 1.03× speedup
-    schnider_full_cy.pyx # Full C hot path — 68× speedup (see below)
-    setup_naive.py       # Build: naive Cython compile of schnider.py (annotate=True)
-    setup_typed.py       # Build: typed derivatives() only
-    setup_full.py        # Build: full C extension
+    schnider_cy.pyx            # Typed Cython on derivatives() only — 1.03×
+    schnider_full_cy.pyx       # Full C hot path (RK4) — 68×
+    schnider_analytical_cy.pyx # Full C hot path (analytical, precomputed Ad/Bd) — 90×
+    setup_naive.py             # Build: naive Cython (annotate=True)
+    setup_typed.py             # Build: typed derivatives() only
+    setup_full.py              # Build: full RK4 C extension
+    setup_analytical.py        # Build: analytical C extension
 
-demo_schnider.py         # Single patient: induction + maintenance + washout
-eval_cohort.py           # Cohort evaluation harness + loss function
-grid_search.py           # Pure Python grid search (~185s baseline)
-grid_search_fast.py      # C extension grid search (~2.7s)
-grid_search_parallel.py  # C extension + multiprocessing (~0.6s, 14 cores)
-profile_sim.py           # cProfile + line_profiler instrumentation
+validation/
+    closed_form.py             # Analytical solution via matrix exponential (AnalyticalSimulator)
+    validate_rk4.py            # Convergence test: RK4 vs analytical, O(dt⁴) confirmed
 
-cohorts/                 # Persisted cohort JSON files
-results/                 # Grid search results
+demo_schnider.py               # Single patient: induction + maintenance + washout
+eval_cohort.py                 # Cohort evaluation harness + loss function
+mass_balance_test.py           # Mass balance verification (buggy vs fixed Ce ODE)
+grid_search.py                 # Pure Python grid search (~185s baseline)
+grid_search_fast.py            # RK4 C extension, single process (~2.7s)
+grid_search_parallel.py        # RK4 C extension + multiprocessing (~0.6s, 14 cores)
+grid_search_analytical.py      # Analytical C extension + multiprocessing (~0.96s, 14 cores)
+profile_sim.py                 # cProfile + line_profiler instrumentation
+
+cohorts/                       # Persisted cohort JSON files
+results/                       # Grid search results
 ```
 
 ---
 
-## C extension
+## C extensions
 
-`cython_ext/schnider_full_cy.pyx` contains the full optimized hot path. Four functions are compiled as `cdef noexcept nogil` — invisible to Python, operating on raw C doubles, no GIL:
+Two C extensions are provided, both in `cython_ext/`. All inner functions are `cdef noexcept nogil` — no Python boundary, no GIL, no tuple allocation inside the simulation loop.
+
+### RK4 extension (`schnider_full_cy.pyx`)
 
 | Function | What it does |
 |---|---|
 | `derivatives_fast` | Schnider ODE right-hand side — 4 compartment equations |
-| `rk4_step_cy` | Fixed-step RK4 integrator — calls `derivatives_fast` directly |
-| `bis_fast` | Hill equation: effect-site concentration → BIS score |
-| `pid_step` | Discrete PID step with anti-windup — operates on a `cdef struct PIDState` |
+| `rk4_step_cy` | Fixed-step RK4 — calls `derivatives_fast` directly as a C function |
+| `bis_fast` | Hill equation: Ce → BIS |
+| `pid_step` | Discrete PID with anti-windup — operates on a `cdef struct PIDState` |
 
-The critical design decision: all four functions live in the **same `.pyx` file**. This means `rk4_step_cy` calls `derivatives_fast` as a direct C function call — no Python boundary, no tuple boxing, no GIL. A separately compiled `derivatives_cy.so` would still pay the Python call overhead four times per RK4 step, which is why `schnider_cy.pyx` (typed `derivatives` only) yields only 1.03× despite correct typing.
+The critical design decision: all four functions live in the **same `.pyx` file**. `rk4_step_cy` calls `derivatives_fast` as a direct C call — no Python boundary, no tuple boxing. A separately compiled `derivatives_cy.so` would still pay the Python call overhead 4× per RK4 step, which is why `schnider_cy.pyx` (typed `derivatives` only) yields only 1.03× despite correct typing.
 
-Two Python-callable entry points are exposed:
+### Analytical extension (`schnider_analytical_cy.pyx`)
 
-- **`simulate_closed_loop_cy(patient, kp, ki, kd, ...)`** — returns a scalar ISE value. No time-series allocation. Used by the grid search.
-- **`simulate_closed_loop_cy_full(patient, kp, ki, kd, ...)`** — returns a full `SimulationResult` with time-series. Used for plotting.
+Implements the closed-form matrix exponential solution. `Ad = expm(A*dt)` and `Bd = A⁻¹*(Ad-I)*B` are precomputed once per patient, reducing each step to a matrix-vector multiply:
 
-### Building the extension
-
-```bash
-python cython_ext/setup_full.py build_ext --inplace
+```
+x[n+1] = Ad @ x[n] + Bd * u     # 9 multiplies, 6 adds (no ODE evaluation)
 ```
 
-Requires Cython and a C compiler (`clang` on macOS, `gcc` on Linux). The `.so` lands in `cython_ext/`.
+Ce coefficients are also precomputed analytically. Per-patient compute is 1.27× faster than the RK4 extension.
+
+### Building
+
+```bash
+python cython_ext/setup_full.py build_ext --inplace        # RK4
+python cython_ext/setup_analytical.py build_ext --inplace  # Analytical
+```
+
+Requires Cython and a C compiler (`clang` on macOS, `gcc` on Linux).
 
 ### Speedup summary
 
@@ -95,19 +111,40 @@ Requires Cython and a C compiler (`clang` on macOS, `gcc` on Linux). The `.so` l
 | Pure Python | 185.2s | 1.0× |
 | Naive Cython | 174.6s | 1.06× |
 | Typed Cython (`derivatives` only) | 178.9s | 1.03× |
-| Full C (`rk4_step` + `derivatives`) | 54.7s | 3.4× |
-| Full C + PID + Hill equation + scalar mode | 2.7s | 68× |
-| Full C + parallel (14 cores) | **0.6s** | **308×** |
+| Full C RK4 (`rk4_step` + `derivatives`) | 54.7s | 3.4× |
+| Full C RK4 + PID + Hill + scalar mode | 2.7s | 68× |
+| Full C RK4 + parallel (14 cores) | 0.6s | 308× |
+| Analytical C (precomputed Ad/Bd) | 2.05s | 90× |
+| Analytical C + parallel (14 cores) | **0.96s** | **193×** |
 
-### Running the fast grid search
+Note: parallel analytical is slower than parallel RK4 at this grid size because process startup and IPC dominate. Pure compute favors analytical by 1.4×.
+
+### Running the grid searches
 
 ```bash
-# Single process
-python grid_search_fast.py
+python grid_search_fast.py                        # RK4, single process
+python grid_search_parallel.py --workers 14       # RK4, parallel
+python grid_search_analytical.py --workers 14     # Analytical, parallel
+```
 
-# Parallel (uses all cores by default, or specify --workers N)
-python grid_search_parallel.py
-python grid_search_parallel.py --workers 8
+---
+
+## Validation
+
+### Mass balance
+
+`mass_balance_test.py` verifies drug conservation. Compares the buggy Ce ODE (`dxe_dt = ke0*(x1-xe)`, which mixes amounts and concentrations) against the correct one (`dCe_dt = ke0*(C1-Ce)`). The buggy version creates phantom drug mass — confirmed by including `xe` in the amount sum.
+
+```bash
+python mass_balance_test.py
+```
+
+### RK4 convergence
+
+`validation/validate_rk4.py` compares RK4 against the closed-form analytical solution at decreasing step sizes. Confirms O(dt⁴) convergence. At the default `dt=0.1 min`, max Cp error is 1e-5 µg/mL — seven orders of magnitude below the therapeutic signal (~3 µg/mL).
+
+```bash
+python validation/validate_rk4.py
 ```
 
 ---
@@ -202,16 +239,19 @@ Key implementation details:
 # Pure Python (~185s — the baseline for the profiling story)
 python grid_search.py --cohort cohorts/n200_seed99.json
 
-# C extension, single process (~2.7s)
+# RK4 C extension, single process (~2.7s)
 python grid_search_fast.py
 
-# C extension + multiprocessing (~0.6s on 14 cores)
+# RK4 C extension + multiprocessing (~0.6s on 14 cores)
 python grid_search_parallel.py --workers 14
+
+# Analytical C extension + multiprocessing (~0.96s on 14 cores)
+python grid_search_analytical.py --workers 14
 ```
 
 Searches 512 candidates ($8^3$ grid) centered on the known optimum region. Each candidate runs all 200 patients in closed-loop.
 
-**512 candidates × 200 patients = 102,400 simulations — 185 seconds in pure Python, 0.6 seconds with the C extension and 14 cores.**
+**512 candidates × 200 patients = 102,400 simulations — 185 seconds in pure Python, under 1 second with the C extension and 14 cores.**
 
 Best gains found: `kp=4000, ki=600, kd=2000`
 
@@ -257,7 +297,8 @@ result = simulate(patient, schedule, duration=90.0, dt=0.1)
 
 ## References
 
-- Schnider TW et al. *The influence of age on propofol pharmacokinetics.* Anesthesiology 1998; 88(5):1170–82
-- Schnider TW et al. *The influence of method of administration and covariates on the pharmacokinetics of propofol in adult volunteers.* Anesthesiology 1999; 90(6):1502–16
-- James WPT. *Research on obesity.* HMSO, London, 1976 (LBM formula)
-- McKay MD, Beckman RJ, Conover WJ. *A comparison of three methods for selecting values of input variables in the analysis of output from a computer code.* Technometrics 1979; 21(2):239–45
+- Schnider TW et al. *The influence of age on propofol pharmacokinetics.* Anesthesiology 1998; 88(5):1170–82 — PK parameters (V1, V2, V3, CL1, CL2, CL3)
+- Schnider TW, Minto CF et al. *The influence of age on propofol pharmacodynamics.* Anesthesiology 1999; 90(6):1502–16 — ke0 = 0.456 min⁻¹
+- Eleveld DJ et al. *Pharmacokinetic–pharmacodynamic model for propofol for broad application in anaesthesia and sedation.* Br J Anaesth 2018; 120:942–959 — BIS PD parameters (e0, emax, ec50, gamma)
+- James WPT. *Research on obesity.* HMSO, London, 1976 — LBM formula
+- McKay MD, Beckman RJ, Conover WJ. *A comparison of three methods for selecting values of input variables in the analysis of output from a computer code.* Technometrics 1979; 21(2):239–45 — Latin Hypercube Sampling

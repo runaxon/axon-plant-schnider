@@ -81,13 +81,15 @@ cdef inline double pid_step(PIDState *pid, double measurement) noexcept nogil:
 cdef inline void derivatives_fast(
     double x1, double x2, double x3, double xe,
     double u,
+    double v1,
     double k10, double k12, double k13, double k21, double k31, double ke0,
     double *dx1, double *dx2, double *dx3, double *dxe,
 ) noexcept nogil:
+    cdef double C1 = x1 / (v1 * 1000.0)   # µg/mL — central plasma concentration
     dx1[0] = u - (k10 + k12 + k13) * x1 + k21 * x2 + k31 * x3
     dx2[0] = k12 * x1 - k21 * x2
     dx3[0] = k13 * x1 - k31 * x3
-    dxe[0] = ke0 * (x1 - xe)
+    dxe[0] = ke0 * (C1 - xe)               # xe is Ce (µg/mL), correct ODE
 
 
 # ---------------------------------------------------------------------------
@@ -97,6 +99,7 @@ cdef inline void derivatives_fast(
 cdef inline void rk4_step_cy(
     double x1, double x2, double x3, double xe,
     double u,
+    double v1,
     double k10, double k12, double k13, double k21, double k31, double ke0,
     double dt,
     double *ox1, double *ox2, double *ox3, double *oxe,
@@ -111,25 +114,25 @@ cdef inline void rk4_step_cy(
     cdef double h2  = 0.5 * dt
     cdef double dt6 = dt / 6.0
 
-    derivatives_fast(x1,   x2,   x3,   xe,   u, k10,k12,k13,k21,k31,ke0,
+    derivatives_fast(x1,   x2,   x3,   xe,   u, v1, k10,k12,k13,k21,k31,ke0,
                      &k1x1,&k1x2,&k1x3,&k1xe)
 
     s2x1 = x1 + h2*k1x1;  s2x2 = x2 + h2*k1x2
     s2x3 = x3 + h2*k1x3;  s2xe = xe + h2*k1xe
 
-    derivatives_fast(s2x1,s2x2,s2x3,s2xe, u, k10,k12,k13,k21,k31,ke0,
+    derivatives_fast(s2x1,s2x2,s2x3,s2xe, u, v1, k10,k12,k13,k21,k31,ke0,
                      &k2x1,&k2x2,&k2x3,&k2xe)
 
     s3x1 = x1 + h2*k2x1;  s3x2 = x2 + h2*k2x2
     s3x3 = x3 + h2*k2x3;  s3xe = xe + h2*k2xe
 
-    derivatives_fast(s3x1,s3x2,s3x3,s3xe, u, k10,k12,k13,k21,k31,ke0,
+    derivatives_fast(s3x1,s3x2,s3x3,s3xe, u, v1, k10,k12,k13,k21,k31,ke0,
                      &k3x1,&k3x2,&k3x3,&k3xe)
 
     s4x1 = x1 + dt*k3x1;  s4x2 = x2 + dt*k3x2
     s4x3 = x3 + dt*k3x3;  s4xe = xe + dt*k3xe
 
-    derivatives_fast(s4x1,s4x2,s4x3,s4xe, u, k10,k12,k13,k21,k31,ke0,
+    derivatives_fast(s4x1,s4x2,s4x3,s4xe, u, v1, k10,k12,k13,k21,k31,ke0,
                      &k4x1,&k4x2,&k4x3,&k4xe)
 
     ox1[0] = x1 + dt6*(k1x1 + 2.0*k2x1 + 2.0*k3x1 + k4x1)
@@ -143,15 +146,13 @@ cdef inline void rk4_step_cy(
 # ---------------------------------------------------------------------------
 
 cdef inline double bis_fast(
-    double xe,
-    double v1,
+    double Ce,
     double e0, double emax, double ec50, double gamma,
 ) noexcept nogil:
-    cdef double ce
-    ce = xe / (v1 * 1000.0)
-    if ce <= 0.0:
+    # Ce is already in µg/mL (stored as concentration, not amount)
+    if Ce <= 0.0:
         return e0
-    cdef double ceg = cpow(ce, gamma)
+    cdef double ceg = cpow(Ce, gamma)
     cdef double val = e0 - emax * ceg / (cpow(ec50, gamma) + ceg)
     if val < 0.0:
         return 0.0
@@ -213,14 +214,14 @@ def simulate_closed_loop_cy(
     n_steps = int(round(duration / dt))
 
     for i in range(n_steps):
-        bis = bis_fast(xe, v1, e0, emax, ec50, gamma)
+        bis = bis_fast(xe, e0, emax, ec50, gamma)
         u   = pid_step(&pid, bis)
 
         # Accumulate ISE only during the maintenance window
         if t >= t_induction and t <= t_maintenance:
             ise += (bis - bis_target) * (bis - bis_target) * dt
 
-        rk4_step_cy(x1, x2, x3, xe, u, k10, k12, k13, k21, k31, ke0, dt,
+        rk4_step_cy(x1, x2, x3, xe, u, v1, k10, k12, k13, k21, k31, ke0, dt,
                     &ox1, &ox2, &ox3, &oxe)
         x1 = ox1;  x2 = ox2;  x3 = ox3;  xe = oxe
         t += dt
@@ -280,9 +281,9 @@ def simulate_closed_loop_cy_full(
     result = SimulationResult()
 
     for i in range(n_steps):
-        bis = bis_fast(xe, v1, e0, emax, ec50, gamma)
+        bis = bis_fast(xe, e0, emax, ec50, gamma)
         cp  = x1 / (v1 * 1000.0)
-        ce  = xe / (v1 * 1000.0)
+        ce  = xe                              # xe is Ce (µg/mL)
         u   = pid_step(&pid, bis)
 
         result.time.append(t)
@@ -291,15 +292,15 @@ def simulate_closed_loop_cy_full(
         result.outputs.setdefault('ce',   []).append(ce)
         result.outputs.setdefault('rate', []).append(u)
 
-        rk4_step_cy(x1, x2, x3, xe, u, k10, k12, k13, k21, k31, ke0, dt,
+        rk4_step_cy(x1, x2, x3, xe, u, v1, k10, k12, k13, k21, k31, ke0, dt,
                     &ox1, &ox2, &ox3, &oxe)
         x1 = ox1;  x2 = ox2;  x3 = ox3;  xe = oxe
         t += dt
 
     # Final point
-    bis = bis_fast(xe, v1, e0, emax, ec50, gamma)
+    bis = bis_fast(xe, e0, emax, ec50, gamma)
     cp  = x1 / (v1 * 1000.0)
-    ce  = xe / (v1 * 1000.0)
+    ce  = xe                                  # xe is Ce (µg/mL)
     u   = pid_step(&pid, bis)
     result.time.append(t)
     result.outputs.setdefault('bis',  []).append(bis)

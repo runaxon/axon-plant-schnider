@@ -62,11 +62,17 @@ def params_from_patient(patient: Patient) -> tuple:
     """
     lbm = patient.lean_body_mass()
 
-    # --- PK (Schnider 1998) ---
+    # --- PK Volumes come from Schnider 1998 - Table 2
+    # Volumes in [L]
     v1 = 4.27
     v2 = 18.9 - 0.391 * (patient.age - 53)
     v3 = 238.0
 
+    # --- Clearances come from Schnider 1998 - Table 2
+    # Clearances in [L/min]
+    # cl1 = metabolic
+    # cl2 = rapid peripheral
+    # cl3 = slow peripheral
     cl1 = (
         1.89
         + 0.0456 * (patient.weight - 77)
@@ -82,12 +88,15 @@ def params_from_patient(patient: Patient) -> tuple:
     k21 = cl2 / v2
     k31 = cl3 / v3
 
-    # --- PD (Schnider 1999) ---
-    ke0 = 0.456
-    e0 = 97.4
-    emax = 97.4
-    ec50 = 3.08
-    gamma = 1.47
+    # --- PD ---
+    ke0 = 0.456    # Schnider 1999 (Anesthesiology 90:1502)
+
+    # Eleveld et al. 2018 (Br J Anaesth 120:942-959)
+    # Table 3 — population BIS model
+    e0 = 93.0  # Awake initial point
+    emax = 93.0  # Fully awake
+    ec50 = 3.08  # ug/ml
+    gamma = 1.47  # PD sigmoid slope
 
     return (v1, v2, v3, k10, k12, k13, k21, k31, ke0, e0, emax, ec50, gamma)
 
@@ -172,10 +181,9 @@ def _run_mass_balance(params, infusion_rate, duration, dt, buggy):
         x3 += dx3   * dt
         A_elim += delim * dt
         Ce += dCe   * dt
+        t  += dt
 
-        t += dt
-
-    total_infused = infusion_rate * duration
+    total_infused = infusion_rate * duration  # intended duration, not n_steps * dt
     total_in_system = x1 + x2 + x3 + A_elim
     mass_balance_error = total_in_system - total_infused
 

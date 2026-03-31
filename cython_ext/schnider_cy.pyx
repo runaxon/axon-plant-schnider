@@ -29,6 +29,8 @@ cdef derivatives_fast(
     double x1, double x2, double x3, double xe,
     # input
     double u,
+    # volume (needed for Ce ODE)
+    double v1,
     # rate constants
     double k10, double k12, double k13,
     double k21, double k31,
@@ -40,11 +42,12 @@ cdef derivatives_fast(
     All arguments and return values are C doubles.
     """
     cdef double dx1, dx2, dx3, dxe
+    cdef double C1 = x1 / (v1 * 1000.0)   # µg/mL
 
     dx1 = u - (k10 + k12 + k13) * x1 + k21 * x2 + k31 * x3
     dx2 = k12 * x1 - k21 * x2
     dx3 = k13 * x1 - k31 * x3
-    dxe = ke0 * (x1 - xe)
+    dxe = ke0 * (C1 - xe)                  # xe is Ce (µg/mL), correct ODE
 
     return dx1, dx2, dx3, dxe
 
@@ -59,10 +62,11 @@ def derivatives_cy(tuple state, tuple inputs, tuple params):
     """
     cdef double x1, x2, x3, xe
     cdef double u
-    cdef double k10, k12, k13, k21, k31, ke0
+    cdef double v1, k10, k12, k13, k21, k31, ke0
 
     x1, x2, x3, xe = state
     (u,)            = inputs
+    v1  = params[0]
     k10 = params[3]
     k12 = params[4]
     k13 = params[5]
@@ -70,4 +74,4 @@ def derivatives_cy(tuple state, tuple inputs, tuple params):
     k31 = params[7]
     ke0 = params[8]
 
-    return derivatives_fast(x1, x2, x3, xe, u, k10, k12, k13, k21, k31, ke0)
+    return derivatives_fast(x1, x2, x3, xe, u, v1, k10, k12, k13, k21, k31, ke0)

@@ -39,13 +39,13 @@ from typing import Callable
 @dataclass
 class Patient:
     """Standard demographic covariates used across compartmental PK/PD models."""
-    age: float   # years
-    weight: float   # kg  (total body weight)
-    height: float   # cm
-    sex: str     # 'male' or 'female'
+    age: float  # years
+    weight: float  # kg  (total body weight)
+    height: float  # cm
+    sex: str  # 'male' or 'female'
 
     def lean_body_mass(self) -> float:
-        """James (1976) LBM formula."""
+        """From Schnider TW et al. 1998"""
         if self.sex.lower() == 'male':
             return 1.1 * self.weight - 128 * (self.weight / self.height) ** 2
         else:
