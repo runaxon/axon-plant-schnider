@@ -34,4 +34,4 @@ physio/*.html
 
 # Myelin generated artifacts
 .myelin/
-# myelin_adapters.py
+myelin_adapters.py
