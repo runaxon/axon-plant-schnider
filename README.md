@@ -1,12 +1,17 @@
 # Schnider Propofol PK/PD Simulator
 
-Example repository for the [Axon](https://runaxon.com) tech blog series on profiling and optimizing physiological models in Python.
+## Article
+
+This repository accompanies a technical article on profiling and optimizing 
+physiological simulators in Python.
+
+[Read the Article](https://runaxon.com/blog/schnider-propofol-pid-optimization/)
 
 ---
 
 ## What this is
 
-A pure-Python implementation of the **Schnider (1998/1999) propofol pharmacokinetic/pharmacodynamic model** — the same model used in clinical Target Controlled Infusion (TCI) pumps — extended with a virtual patient cohort generator, a closed-loop PID controller, and a grid search optimizer.
+A pure-Python implementation of the **Schnider (1998/1999) propofol pharmacokinetic/pharmacodynamic model** extended with a virtual patient cohort generator, a closed-loop PID controller, and a grid search optimizer.
 
 The repository accompanies a blog article that walks through:
 1. Implementing the physiological model (non-closed form solution)
